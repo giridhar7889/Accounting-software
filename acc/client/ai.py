@@ -2,8 +2,7 @@ import openai
 from openai import OpenAI
 import os
 
-API_KEY = "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"
-openai.api_key = API_KEY
+#API_KEY = "os.getenv("OPENAI_API_KEY")
 
 
 def edit(description):
