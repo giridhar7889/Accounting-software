@@ -228,8 +228,6 @@ def get_bank(file_path, bank):
             return False
 
 def main(file_path):
-    print("welcome to main")
-    print(file_path)
     if os.path.isdir(file_path):
         files_same_bank = []
         for filename in os.listdir(file_path):
