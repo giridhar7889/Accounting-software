@@ -7,7 +7,7 @@ table_settings = {
     "intersection_x_tolerance": 3,
 }
 
-file_path_config = '/Users/jinhe/Documents/M&T Bank/Files'
+file_path_config = '/Users/giridharjadala/Documents/acc/acc/uploads/Chase Premier Plus Checking.pdf'
 
 # '/Users/jinhe/Documents/Different Bank Types/Chase Business Select Checking.pdf'
 base_year_config = 20

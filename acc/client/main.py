@@ -10,7 +10,7 @@ from .config import *
 import os
 import datetime
 import re
-from  .process_description import *
+from .process_description import *
 from .chase import *
 from .ai import edit
 
@@ -228,8 +228,8 @@ def get_bank(file_path, bank):
             return False
 
 def main(file_path):
-    is_bank = None  # Initialize is_bank to avoid UnboundLocalError
-    
+    print("welcome to main")
+    print(file_path)
     if os.path.isdir(file_path):
         files_same_bank = []
         for filename in os.listdir(file_path):
@@ -238,30 +238,21 @@ def main(file_path):
                 continue
             if os.path.isfile(full_path):  # Check if it's a file
                 print('checks passed')
-                is_bank = check_bank(full_path, file_path)  # Assign value to is_bank
+                is_bank = check_bank(full_path, file_path)
                 files_same_bank.append(is_bank)
 
-        # Ensure is_bank is assigned a value and files_same_bank has consistent values
-        if is_bank and all(x == files_same_bank[0] for x in files_same_bank if x) if files_same_bank else False:
+        if is_bank and all(x==files_same_bank[0] for x in files_same_bank) if files_same_bank else False:
             df = driver(file_path, is_bank)
             return df
-        else:
-            print("Bank not recognized or inconsistent bank types.")
-            return None
-
     else:
         if file_path.startswith('.') or not file_path.lower().endswith('.pdf'):
             pass
         if os.path.isfile(file_path):
-            print('this is it 1')
-            is_bank = check_bank(file_path, file_path)  # Assign value to is_bank
+            # print('this is it 1')
+            is_bank = check_bank(file_path, file_path)  # Check if it's a file
         if is_bank:
-            df = driver(file_path, is_bank)
+            df = driver(file_path,is_bank)
             return df
-        else:
-            print("Bank not recognized.")
-            return None
-
 
 def check_bank(file_full_path, file_path):
     try: 
@@ -291,34 +282,30 @@ def check_bank(file_full_path, file_path):
     # except Exception as e: 
     #     print(f'1 Problem with {file_full_path}: {e}')
 
+#1st block
 # update uncomment   
-df = main(file_path_config)
+df_complete = main(file_path_config)
+# df_complete.to_clipboard()
+# print(df_complete.to_string())
+
 # print(df.to_string())
 # print(df[memo_config].to_string())
-# df[description_config] = df.apply(
-#     lambda row: process_description(row[memo_config]) if pd.isna(row[description_config]) else row[description_config],
-#     axis=1
-# ) 
-if df is not None and not df.empty:
-    # Proceed with applying functions to the DataFrame
-    df[description_config] = df.apply(
-        lambda row: process_description(row[memo_config]) if pd.isna(row[description_config]) else row[description_config],
-        axis=1
-    )
-# print(df.to_string())
-if df is not None and not df.empty:
-    # If df is valid, apply further processing
-    print("DataFrame returned from main() is valid. Proceeding with processing...")
-    
-    df[description_config] = df.apply(
-        lambda row: process_description(row[memo_config]) if pd.isna(row[description_config]) else row[description_config],
-        axis=1
-    )
+df_complete[description_config] = df_complete.apply(
+    lambda row: process_description(row[memo_config]) if pd.isna(row[description_config]) else row[description_config],
+    axis=1
+) 
 
-    df = df.drop_duplicates(subset=description_config, keep='first', ignore_index=True)
-    dfcopy = df[[description_config, memo_config, deposit_config, withdrawal_config]]
-    dfcopy.to_clipboard()
-    print(dfcopy.to_string())
+# print(df_complete.to_string())
+
+# print(df.to_string())
+df_summary = df_complete.drop_duplicates(subset=description_config,keep='first',ignore_index=True)
+# print('df summar')
+# print(df_summary.to_string())
+# df_summary.to_clipboard()
+
+dfcopy = df_summary[[description_config,memo_config,deposit_config,withdrawal_config]]
+# dfcopy.to_clipboard()
+# print(dfcopy.to_string())
 
 # df_description = pd.Series(df[description_config].unique())
 # df_description.to_clipboard()
@@ -332,115 +319,33 @@ if df is not None and not df.empty:
 #     text=count
 #     return text
 
-# df_ai = dfcopy.head(5).copy()
-# df_ai['AI Suggested'] = None
-# # print(df_ai.to_string())
-# df_ai['AI Suggested'] = df_ai[description_config].apply(edit)
-# df_ai = df_ai.drop_duplicates(subset='AI Suggested',keep='first',ignore_index=True)
-# df_ai = df_ai[['AI Suggested',description_config,memo_config,deposit_config,withdrawal_config]]
+# df_ai = dfcopy.copy()
+df_ai = dfcopy.head(10).copy()
+# print(df_ai.to_string()
+df_ai['AI Suggested'] = None
 # print(df_ai.to_string())
+df_ai['AI Suggested'] = df_ai[description_config].apply(edit)
 
-if df is not None and not df.empty:
-    # If df is valid, apply further processing
-    print("DataFrame returned from main() is valid. Proceeding with processing...")
+df_ai_copy = df_ai.copy()
+df_ai_copy[account_config]='Sales'
 
-    # Apply the description processing logic
-    df[description_config] = df.apply(
-        lambda row: process_description(row[memo_config]) if pd.isna(row[description_config]) else row[description_config],
-        axis=1
-    )
+df_ai = df_ai.drop_duplicates(subset='AI Suggested',keep='first',ignore_index=True)
+df_ai = df_ai[['AI Suggested',description_config,memo_config,deposit_config,withdrawal_config]]
+print(df_ai.to_string())
+df_ai.to_clipboard()
 
-    # Remove duplicates
-    df = df.drop_duplicates(subset=description_config, keep='first', ignore_index=True)
 
-    # Create dfcopy
-    dfcopy = df[[description_config, memo_config, deposit_config, withdrawal_config]]
-
-    # Ensure dfcopy is also valid before proceeding
-    if dfcopy is not None and not dfcopy.empty:
-        dfcopy.to_clipboard()
-        print(dfcopy.to_string())
-
-        # Proceed to create df_ai based on dfcopy
-        df_ai = dfcopy.head(5).copy()
-        df_ai['AI Suggested'] = None
-        df_ai['AI Suggested'] = df_ai[description_config].apply(edit)
-        df_ai = df_ai.drop_duplicates(subset='AI Suggested', keep='first', ignore_index=True)
-        df_ai = df_ai[['AI Suggested', description_config, memo_config, deposit_config, withdrawal_config]]
-        print(df_ai.to_string())
-
-    else:
-        print("Error: dfcopy is empty or None.")
-else:
-    print("Error: No valid DataFrame returned from main().")
-
-# df_ai[account_config] = 'Sales'
-
-# dict_fill_acct = df_ai.set_index('AI Suggested')[account_config].to_dict()
-# dict_fill_des = df_ai.set_index(description_config)['AI Suggested'].to_dict()
+def fill(df_ai,df_complete):
+    dict_fill_acct = df_ai.set_index('AI Suggested')[account_config].to_dict()
+    dict_fill_des = df_ai.set_index(description_config)['AI Suggested'].to_dict()
+    df_complete[description_config]=df_complete[description_config].replace(dict_fill_des)
+    df_complete[account_config] = df_complete[description_config].map(dict_fill_acct)
+    df_complete = df_complete[[description_config,account_config,memo_config,deposit_config,withdrawal_config]]
+    return df_complete
 
 # print(dict_fill_acct)
 
 
-# df_ai[description_config]=df_ai[description_config].replace(dict_fill_des)
-# df_ai[account_config] = df_ai[description_config].map(dict_fill_acct)
-# df_ai = df_ai[[description_config,account_config,memo_config,deposit_config,withdrawal_config]]
-# print(df_ai.to_string())
-# Call the main function
-df = main(file_path_config)
-
-# Check if df is None or empty before proceeding
-if df is not None and not df.empty:
-    # If df is valid, apply further processing
-    print("DataFrame returned from main() is valid. Proceeding with processing...")
-
-    # Apply the description processing logic
-    df[description_config] = df.apply(
-        lambda row: process_description(row[memo_config]) if pd.isna(row[description_config]) else row[description_config],
-        axis=1
-    )
-
-    # Remove duplicates
-    df = df.drop_duplicates(subset=description_config, keep='first', ignore_index=True)
-
-    # Create dfcopy
-    dfcopy = df[[description_config, memo_config, deposit_config, withdrawal_config]]
-
-    # Ensure dfcopy is also valid before proceeding
-    if dfcopy is not None and not dfcopy.empty:
-        dfcopy.to_clipboard()
-        print(dfcopy.to_string())
-
-        # Create df_ai based on dfcopy (only the top 5 rows initially)
-        df_ai = dfcopy.head(5).copy()
-
-        # Ensure df_ai is valid before proceeding
-        if df_ai is not None and not df_ai.empty:
-            df_ai['AI Suggested'] = None
-            df_ai['AI Suggested'] = df_ai[description_config].apply(edit)
-            df_ai = df_ai.drop_duplicates(subset='AI Suggested', keep='first', ignore_index=True)
-            df_ai = df_ai[['AI Suggested', description_config, memo_config, deposit_config, withdrawal_config]]
-            print(df_ai.to_string())
-
-            # Add the account_config column after defining df_ai
-            df_ai[account_config] = 'Sales'  # Define 'Sales' or another appropriate value
-
-        else:
-            print("Error: df_ai is empty or None.")
-    else:
-        print("Error: dfcopy is empty or None.")
-else:
-    print("Error: No valid DataFrame returned from main().")
-
-
-
-# df_ai_vendor = df_description.apply(edit)
-# df_ai_vendor = pd.DataFrame(df_ai_vendor, columns=['AI Suggested'])
-# print(df_ai_vendor.to_string())
-
-
-# df = df[[description_config,memo_config]]
-# print(df.to_string())
-# update delete afterwards 
-# bank = 'MANUFACTURERS AND TRADERS TRUST COMPANY'
-# driver(file_path_config, bank)
+df_fill = fill(df_ai_copy,df_complete)
+# df_fill.to_clipboard()
+# print(df_fill.to_string())

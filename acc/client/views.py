@@ -17,7 +17,7 @@ def home(request):
             file_path = handle_uploaded_file(pdf_file)
             try:
                 # Call your main() function to process the file
-                # result = main(file_path)
+                result = main(file_path)
                 return HttpResponse("File processed successfully.")
             except Exception as e:
                 return HttpResponse(f"Error processing file: {e}")
