@@ -11,11 +11,15 @@ file_path_config = '/Users/giridharjadala/Documents/acc/acc/uploads/Chase Premie
 
 # '/Users/jinhe/Documents/Different Bank Types/Chase Business Select Checking.pdf'
 base_year_config = 20
-deposit_config = "Deposits and Other Credits(+)"
-withdrawal_config = "Withdrawals & Other Debits (-)"
+deposit_config = "Deposits_and_Other_Credits"
+withdrawal_config = "Withdrawals_and_Other_Debits"
 account_config = 'Account'
-columns_config = ["Date", "Memo", "Deposits and Other Credits(+)","Withdrawals & Other Debits (-)"]
+columns_config = ["Date", "Memo", "Deposits_and_Other_Credits","Withdrawals_and_Other_Debits"]
 description_config = 'Description'
-all_columns_config = ['Date','Description','Account','Memo','Deposits and Other Credits(+)','Withdrawals & Other Debits (-)']
+date_config = 'Date'
+checks_config = 'Checks'
+account_config = 'Account'
+ai_vendor_payee_config = 'Suggested_Vendor_Payee'
+all_columns_config = [date_config,ai_vendor_payee_config,description_config,account_config,'Memo','Deposits_and_Other_Credits','Withdrawals_Other_Debits']
 memo_config = 'Memo'
 bank_config = ['MANUFACTURERS AND TRADERS TRUST COMPANY','JPMORGAN CHASE BANK','WWW.CHASE.COM']

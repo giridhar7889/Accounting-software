@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Transactions</title>
+</head>
+<body>
+    <h1>All Transaction Information</h1>
+
+    <!-- Table to display all transaction information -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Suggested_Vendor_Payee</th>
+                <th>Description</th>
+                <th>Accounts</th>
+                <th>Credits</th>
+                <th>Debits</th>
+                <th>Checks</th>
+                <th>Memo</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in transactions %}
+    <tr>
+        <td>{{ row.Date }}</td>
+        <td>{{ row.Suggested_Vendor_Payee }}</td>
+        <td>{{ row.Description }}</td>
+        <td>{{ row.Account }}</td>
+        <td>{{ row.Deposits_and_Other_Credits }}</td>
+        <td>{{ row.Withdrawals_and_Other_Debits }}</td>
+        <td>{{ row.Checks }}</td>
+        <td>{{ row.Memo }}</td>
+    </tr>
+{% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Button to download as CSV -->
+    <button onclick="window.location.href='/download_csv/'">Download as CSV</button>
+
+    <!-- Button to download as Excel -->
+    <button onclick="window.location.href='/download_excel/'">Download as Excel</button>
+
+    <!-- Button to navigate back to the home page -->
+    <button onclick="window.location.href='/'">Back to Home</button>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Account Information</title>
+</head>
+<body>
+    <h1>Account Information</h1>
+
+    <!-- Table to display the account information -->
+    <table>
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Credits</th>
+                <th>Debits</th>
+                <th>Vendor/Payee</th>
+                <th>Actions</th> <!-- Column for actions -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>
+                    <input type="text" value="{{ row.Account }}" id="account_{{ forloop.counter0 }}" />
+                </td>
+                <td>{{ row.Deposits_and_Other_Credits }}</td>
+                <td>{{ row.Withdrawals_and_Other_Debits }}</td>
+                <td>{{ row.Suggested_Vendor_Payee }}</td>
+                <td>
+                    <button onclick="saveAccount('{{ forloop.counter0 }}')">Save</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Button to navigate back to the home page -->
+    <button onclick="window.location.href='/'">Back to Home</button>
+
+    <!-- Button to navigate to the download page -->
+    <button onclick="window.location.href='/download/'">Download Transactions</button>
+
+    <script>
+        function saveAccount(index) {
+            const accountValue = document.getElementById(`account_${index}`).value;
+
+            // Ensure index is valid
+            if (index === undefined || index === null) {
+                alert('Invalid index');
+                return;
+            }
+
+            // Make an AJAX call to save the updated account information
+            fetch('/update_account/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    index: index,
+                    account: accountValue
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

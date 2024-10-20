@@ -147,10 +147,10 @@ def process_data(text, year, count):
     # print(len(prices1))
     # print(len(memo))
     # print(len(signs))
-    df = pd.DataFrame({all_columns_config[0]: dates, all_columns_config[1]: descriptions, deposit_config: prices, withdrawal_config: prices1,'Checks': checks,
-                        all_columns_config[3]: memo})  # ,deleted'Transaction Type': signs
+    df = pd.DataFrame({all_columns_config[0]: dates, description_config: descriptions, deposit_config: prices, withdrawal_config: prices1,'Checks': checks,
+                        all_columns_config[4]: memo,ai_vendor_payee_config:None,account_config:None})  # ,deleted'Transaction Type': signs
     df[all_columns_config[2]] = None
-    account_order = ['Date', 'Description', 'Account', deposit_config, withdrawal_config,'Checks', 'Memo']
+    account_order = [date_config, ai_vendor_payee_config,description_config, account_config, deposit_config, withdrawal_config,'Checks', 'Memo']
     df = df[account_order]
     df['Date']=pd.to_datetime(df['Date'],format='%m/%d/%Y')
     months = df['Date'].dt.month.unique()

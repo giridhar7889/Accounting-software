@@ -282,68 +282,69 @@ def check_bank(file_full_path, file_path):
 
 #1st block
 # update uncomment   
-df_complete = main(file_path_config)
-# df_complete.to_clipboard()
-# print(df_complete.to_string())
-
-# print(df.to_string())
-# print(df[memo_config].to_string())
-df_complete[description_config] = df_complete.apply(
-    lambda row: process_description(row[memo_config]) if pd.isna(row[description_config]) else row[description_config],
-    axis=1
-) 
+# df_complete = main(file_path_config)
+# # df_complete.to_clipboard()
 
 # print(df_complete.to_string())
 
-# print(df.to_string())
-df_summary = df_complete.drop_duplicates(subset=description_config,keep='first',ignore_index=True)
-# print('df summar')
-# print(df_summary.to_string())
-# df_summary.to_clipboard()
+# # print(df.to_string())
+# # print(df[memo_config].to_string())
+# df_complete[description_config] = df_complete.apply(
+#     lambda row: process_description(row[memo_config]) if pd.isna(row[description_config]) else row[description_config],
+#     axis=1
+# ) 
 
-dfcopy = df_summary[[description_config,memo_config,deposit_config,withdrawal_config]]
-# dfcopy.to_clipboard()
-# print(dfcopy.to_string())
+# # print(df_complete.to_string())
 
-# df_description = pd.Series(df[description_config].unique())
-# df_description.to_clipboard()
-# print(df_description.to_string())
+# # print(df.to_string())
+# df_summary = df_complete.drop_duplicates(subset=description_config,keep='first',ignore_index=True)
+# # print('df summar')
+# # print(df_summary.to_string())
+# # df_summary.to_clipboard()
+
+# dfcopy = df_summary[[description_config,memo_config,deposit_config,withdrawal_config]]
+# # dfcopy.to_clipboard()
+# # print(dfcopy.to_string())
+
+# # df_description = pd.Series(df[description_config].unique())
+# # df_description.to_clipboard()
+# # print(df_description.to_string())
 
 
-#uncomment block for AI 
+# #uncomment block for AI 
 
-# def edit(text):
-#     count = random.randint(1,10000)
-#     text=count
-#     return text
+# # def edit(text):
+# #     count = random.randint(1,10000)
+# #     text=count
+# #     return text
 
-# df_ai = dfcopy.copy()
-df_ai = dfcopy.head(10).copy()
-# print(df_ai.to_string()
-df_ai['AI Suggested'] = None
+# # df_ai = dfcopy.copy()
+# df_ai = dfcopy.head(10).copy()
+# # print(df_ai.to_string()
+# df_ai['AI Suggested'] = None
+# # print(df_ai.to_string())
+# df_ai['AI Suggested'] = df_ai[description_config].apply(edit)
+
+# df_ai_copy = df_ai.copy()
+# df_ai_copy[account_config]='Sales'
+
+# df_ai = df_ai.drop_duplicates(subset='AI Suggested',keep='first',ignore_index=True)
+# df_ai = df_ai[['AI Suggested',description_config,memo_config,deposit_config,withdrawal_config]]
 # print(df_ai.to_string())
-df_ai['AI Suggested'] = df_ai[description_config].apply(edit)
-
-df_ai_copy = df_ai.copy()
-df_ai_copy[account_config]='Sales'
-
-df_ai = df_ai.drop_duplicates(subset='AI Suggested',keep='first',ignore_index=True)
-df_ai = df_ai[['AI Suggested',description_config,memo_config,deposit_config,withdrawal_config]]
-print(df_ai.to_string())
-df_ai.to_clipboard()
+# df_ai.to_clipboard()
 
 
-def fill(df_ai,df_complete):
-    dict_fill_acct = df_ai.set_index('AI Suggested')[account_config].to_dict()
-    dict_fill_des = df_ai.set_index(description_config)['AI Suggested'].to_dict()
-    df_complete[description_config]=df_complete[description_config].replace(dict_fill_des)
-    df_complete[account_config] = df_complete[description_config].map(dict_fill_acct)
-    df_complete = df_complete[[description_config,account_config,memo_config,deposit_config,withdrawal_config]]
-    return df_complete
+# def fill(df_ai,df_complete):
+#     dict_fill_acct = df_ai.set_index('AI Suggested')[account_config].to_dict()
+#     dict_fill_des = df_ai.set_index(description_config)['AI Suggested'].to_dict()
+#     df_complete[description_config]=df_complete[description_config].replace(dict_fill_des)
+#     df_complete[account_config] = df_complete[description_config].map(dict_fill_acct)
+#     df_complete = df_complete[[description_config,account_config,memo_config,deposit_config,withdrawal_config]]
+#     return df_complete
 
-# print(dict_fill_acct)
+# # print(dict_fill_acct)
 
 
-df_fill = fill(df_ai_copy,df_complete)
-# df_fill.to_clipboard()
-# print(df_fill.to_string())
+# df_fill = fill(df_ai_copy,df_complete)
+# # df_fill.to_clipboard()
+# # print(df_fill.to_string())

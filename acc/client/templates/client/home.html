@@ -1,16 +1,120 @@
-<!-- client/templates/client/home.html -->
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Upload PDF</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload PDF and Display Data</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .editable {
+            background-color: #ffffcc;
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload PDF File</h1>
-    <form method="post" enctype="multipart/form-data">
+    <h1>Upload PDF and Display Data</h1>
+
+    <!-- File upload form -->
+    <form id="uploadForm" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         {{ form.as_p }}
+        <input type="file" name="pdf_file" multiple accept=".pdf">  <!-- Allow multiple PDF uploads -->
         <button type="submit">Upload</button>
     </form>
+
+    <!-- Table container to display the DataFrame -->
+    <div id="tableContainer"></div>
+
+    <!-- Button to navigate to the account review page -->
+    <button onclick="window.location.href='{% url 'review_account' %}'">Review Account</button>
+
+    <!-- JavaScript to handle the form submission and render the table -->
+    <script>
+        $(document).ready(function() {
+            $('#uploadForm').submit(function(event) {
+                event.preventDefault();  // Prevent the default form submission
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '/',  // URL that handles the file upload (Django view)
+                    type: 'POST',
+                    data: formData,
+                    processData: false,  // Important for file upload
+                    contentType: false,  // Important for file upload
+                    success: function(response) {
+                        console.log(response.data);  // Log the received data
+
+                        // Clear the table before adding new rows
+                        $('#tableContainer').empty();
+
+                        // Create the table structure from the received JSON data
+                        var table = '<table><thead><tr>';
+                        table += '<th>Suggested Vendor/Payee</th><th>Memo</th><th>Actions</th>';
+                        table += '</tr></thead><tbody>';
+
+                        // Populate the table with data from the JSON response
+                        $.each(response.data, function(index, row) {
+                            table += '<tr>';
+                            table += '<td contenteditable="true" class="editable" data-field="Suggested_Vendor_Payee">' + row['Suggested_Vendor_Payee'] + '</td>';
+                            table += '<td contenteditable="true" class="editable" data-field="Memo">' + row['Memo'] + '</td>';
+                            table += '<td><button class="save-btn" data-index="' + index + '">Save</button></td>';
+                            table += '</tr>';
+                        });
+
+                        table += '</tbody></table>';
+
+                        // Append the generated table to the container
+                        $('#tableContainer').append(table);
+
+                        // Handle save button clicks
+                        $('.save-btn').click(function() {
+                            var rowIndex = $(this).data('index');
+                            var updatedRow = {};
+
+                            // Loop through the editable fields in the row
+                            $(this).closest('tr').find('.editable').each(function() {
+                                var field = $(this).data('field');
+                                var value = $(this).text();
+                                updatedRow[field] = value;
+                            });
+
+                            // Send the updated row to the server for saving
+                            $.ajax({
+                                url: '/save-edits/',  // URL that handles saving edits
+                                type: 'POST',
+                                data: JSON.stringify({
+                                    index: rowIndex,
+                                    updated_row: updatedRow
+                                }),
+                                contentType: 'application/json',
+                                success: function(response) {
+                                    if (response.status === 'success') {
+                                        alert('Row saved successfully!');
+                                    } else {
+                                        alert('Error saving row: ' + response.message);
+                                    }
+                                }
+                            });
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
