@@ -232,10 +232,13 @@ def download_page(request):
 
     # Use df_dict_ai if it exists, otherwise fall back to df_dict
     transactions = df_dict
+    print('df_dict')
     print(df_dict.to_string())
     # Convert DataFrame to a list of dictionaries to pass to the template
     transactions_list = transactions.to_dict('records')
     # print(transactions_list)
+    print('transactionscolumns')
+
     print(transactions.columns)  # Print column names of df_dict
 
     return render(request, 'client/download.html', {'transactions': transactions_list})

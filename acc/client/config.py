@@ -13,8 +13,8 @@ file_path_config = "/Users/jinhe/Documents/M&T Bank/Files(1)/chase rako arligton
 # '/Users/jinhe/Documents/Different Bank Types/Chase Business Select Checking.pdf'
 base_year_config = '20'
 date_config = 'Date'
-deposit_config = "Deposits_and_Other_Credits(+)"
-withdrawal_config = "Withdrawals_&_Other_Debits (-)"
+deposit_config = "Deposits_and_Other_Credits"
+withdrawal_config = "Withdrawals_and_Other_Debits"
 account_config = 'Account'
 memo_config = 'Memo'
 checks_config = 'Checks'
