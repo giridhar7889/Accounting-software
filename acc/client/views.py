@@ -76,6 +76,8 @@ def home(request):
                 # Send df_dict_ai (deduplicated) to the client for review
                 if not df_dict_ai.empty:
                     json_data = df_dict_ai.to_dict(orient='records')
+                    print('json data')
+                    print(json_data)
                     return JsonResponse({'data': json_data})
                 else:
                     return JsonResponse({'data': []})

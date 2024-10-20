@@ -3,10 +3,10 @@ import re
 import pdfplumber
 # from pdf import *
 import os
-from config import *
-import process_description
-from ai import ai_get_year
-from ai import ai_year_filename
+from .config import *
+from .process_description import *
+from .ai import ai_get_year
+from .ai import ai_year_filename
 
 pattern_mdy = re.compile(r'\d{1,2}\/\d{1,2}(\/\d{4})')  # Pattern to match MM/DD format
 pattern_md = re.compile(r'\d{1,2}\/\d{1,2}')  # Pattern to match MM/DD format
@@ -228,7 +228,7 @@ def filter_lines(entire_text,year):
                     if check_in_d:
                         check_no = check_in_d.group(1)
                     else:
-                        check_no = None
+                        check_no = ""
 
                     memo_list.append(description)
                     dates_list.append(date)
@@ -259,10 +259,10 @@ def filter_lines(entire_text,year):
         checks_config: checks_list,
         description_config:None,
         account_config:None,
-        # description_ai_config:None,
-        withdrawal_config:None})  
+        ai_vendor_payee_config:None,
+        withdrawal_config:""})  
 
-    account_order = [date_config, description_config, account_config, deposit_config, withdrawal_config,checks_config, memo_config]
+    account_order = [date_config, ai_vendor_payee_config, description_config, account_config, deposit_config, withdrawal_config,checks_config, memo_config]
     df = df[account_order]
     # print(df.to_string())
 
@@ -271,8 +271,8 @@ def filter_lines(entire_text,year):
         has_positive = (df[deposit_config] > 0).any()
         has_negative = (df[deposit_config] < 0).any()
         if has_positive and has_negative: 
-            df[withdrawal_config] = df[deposit_config].apply(lambda x: abs(x) if x < 0 else None)
-            df[deposit_config] = df[deposit_config].apply(lambda x: x if x > 0 else None)
+            df[withdrawal_config] = df[deposit_config].apply(lambda x: abs(x) if x < 0 else "")
+            df[deposit_config] = df[deposit_config].apply(lambda x: x if x > 0 else "")
         else:
             #deposits type is float
             deposits = get_deposits(lines)
@@ -289,10 +289,10 @@ def filter_lines(entire_text,year):
                         df.at[i, deposit_config] = remaining_deposit  # Set the remainder to deposit_config
 
                         # Move the excess to withdrawal_config
-                        df.at[i, withdrawal_config] = None
+                        df.at[i, withdrawal_config] = ""
                     else:
                         # All deposit capacity is used, move everything to withdrawal_config
-                        df.at[i, deposit_config] = None
+                        df.at[i, deposit_config] = ""
                         df.at[i, withdrawal_config] = current_value
 
                     cum_sum = deposits  # We have reached the deposit limit
@@ -300,7 +300,7 @@ def filter_lines(entire_text,year):
                     # For subsequent rows, move everything to withdrawal_config
                     for j in range(i + 1, len(df)):
                         df.at[j, withdrawal_config] = df.at[j, deposit_config]
-                        df.at[j, deposit_config] = None
+                        df.at[j, deposit_config] = ""
                     break
 
     except Exception as e:
@@ -334,5 +334,5 @@ def chase(file_path):
         print('Unable to continue: year error')
 
 
-# df=chase('/Users/jinhe/Documents/M&T Bank/Other Files/amex 2023-10-13.pdf')
+# df=chase('/Users/jinhe/Documents/M&T Bank/Short Chase.pdf')
 # print(df.to_string())

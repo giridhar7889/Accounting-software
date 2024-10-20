@@ -13,15 +13,15 @@ file_path_config = "/Users/jinhe/Documents/M&T Bank/Files(1)/chase rako arligton
 # '/Users/jinhe/Documents/Different Bank Types/Chase Business Select Checking.pdf'
 base_year_config = '20'
 date_config = 'Date'
-deposit_config = "Deposits and Other Credits(+)"
-withdrawal_config = "Withdrawals & Other Debits (-)"
+deposit_config = "Deposits_and_Other_Credits(+)"
+withdrawal_config = "Withdrawals_&_Other_Debits (-)"
 account_config = 'Account'
 memo_config = 'Memo'
 checks_config = 'Checks'
-description_ai_config = 'Name Suggested'
+ai_vendor_payee_config = 'Suggested_Vendor_Payee'
 description_config = 'Description'
-columns_config = ["Date", "Memo", "Deposits and Other Credits(+)","Withdrawals & Other Debits (-)"]
-all_columns_config = [date_config,description_config,account_config,memo_config,deposit_config,withdrawal_config]
+columns_config = ["Date", "Memo", deposit_config,withdrawal_config]
+all_columns_config = [date_config,ai_vendor_payee_config,description_config,account_config,memo_config,deposit_config,withdrawal_config]
 
 bank_config = ['MANUFACTURERS AND TRADERS TRUST COMPANY','JPMORGAN CHASE BANK','WWW.CHASE.COM','BANK OF AMERICA']
 
